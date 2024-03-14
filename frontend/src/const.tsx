@@ -1,15 +1,32 @@
+declare const window: {
+    env: {
+        authLoginUri: string;
+        authLogoutUri: string;
+        authScope: string;
+        authRespType: string;
+        authRedirectUri: string;
+        authClientId: string;
+        authCodeChallengeMethod: string;
+
+        authTokenUri: string;
+        authGrantType: string;
+
+        backendBaseUrl: string;
+    }
+};
+
 export const PKCE_LOCAL_KEY = "pkce_code";
 export const TOKENS_LOCAL_KEY = "tokens";
 
-export const AUTH_LOGIN_URI = process.env.REACT_APP_AUTH_LOGIN_URI as string;
-export const AUTH_LOGOUT_URI = process.env.REACT_APP_AUTH_LOGOUT_URI as string;
-export const SCOPE = process.env.REACT_APP_AUTH_SCOPE as string;
-export const RESP_TYPE = process.env.REACT_APP_AUTH_RESP_TYPE as string;
-export const REDIRECT_URI = process.env.REACT_APP_AUTH_REDIRECT_URI as string;
-export const CLIENT_ID = process.env.REACT_APP_AUTH_CLIENT_ID as string;
-export const CODE_CHALLENGE_METHOD = process.env.REACT_APP_AUTH_CODE_CHALLENGE_METHOD as string;
+export const AUTH_LOGIN_URI = window.env.authLoginUri;
+export const AUTH_LOGOUT_URI = window.env.authLogoutUri;
+export const SCOPE = window.env.authScope;
+export const RESP_TYPE = window.env.authRespType;
+export const REDIRECT_URI = window.env.authRedirectUri;
+export const CLIENT_ID = window.env.authClientId;
+export const CODE_CHALLENGE_METHOD = window.env.authCodeChallengeMethod;
 
-export const AUTH_TOKEN_URI = process.env.REACT_APP_AUTH_TOKEN_URI as string;
-export const GRANT_TYPE = process.env.REACT_APP_AUTH_GRANT_TYPE as string;
+export const AUTH_TOKEN_URI = window.env.authTokenUri;
+export const GRANT_TYPE = window.env.authGrantType;
 
-export const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL as string;
+export const BACKEND_BASE_URL = window.env.backendBaseUrl;

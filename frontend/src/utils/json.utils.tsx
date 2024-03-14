@@ -1,6 +1,20 @@
-import { Claims } from '../dao/login/login.dao';
+import { Claims, Tokens } from '../dao/login/login.dao';
+import { UserState } from '../dao/state/state.dao';
 
-export const getEmail: (idToken: string) => string = (idToken: string) => {
+export const buildUserState: (tokenStr: string|null) => UserState|boolean = (tokenStr: string|null) => {
+    if (!tokenStr) {
+        return false;
+    }
+    try {
+        const tokens: Tokens = JSON.parse(tokenStr);
+        return buildUserStateFromIdToken(tokens.idToken);
+    } catch (error) {
+        console.error('Error decoding ID token:', error);
+    }
+    return false;
+}
+
+export const buildUserStateFromIdToken: (idToken: string) => UserState|boolean = (idToken: string) => {
     try {
         // Decode the ID token
         const payloadBase64 = idToken.split('.')[1];
@@ -8,10 +22,19 @@ export const getEmail: (idToken: string) => string = (idToken: string) => {
         const claims: Claims = JSON.parse(decodedPayload);
 
         // Access the claims
-        const { email } = claims;
-        return email;
+        const { sub, email, given_name, name, family_name, picture } = claims;
+        const user: UserState = {
+            loggedIn: true,
+            id: sub,
+            givenName: given_name,
+            familyName: family_name,
+            fullName: name,
+            email: email,
+            picture: picture
+        }
+        return user;
     } catch (error) {
         console.error('Error decoding ID token:', error);
     }
-    return "";
+    return false;
 }

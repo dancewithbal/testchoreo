@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.scss";
 import Home from "./routes/home/home.component";
@@ -10,20 +10,20 @@ import { useAppDispatch } from './store/hooks';
 import { loggedIn } from './store/features/user/user.slice';
 import * as cts from "./const";
 import NotFound from "./routes/NotFound/NotFound";
-import { Tokens } from "./dao/login/login.dao";
 import Results from './routes/results/results.component';
-import { getEmail } from "./utils/json.utils";
+import { buildUserState } from "./utils/json.utils";
+import { UserState } from "./dao/state/state.dao";
 
 const App = () => {
-  const loggedInTokens = window.sessionStorage.getItem(cts.TOKENS_LOCAL_KEY);
-
   const dispatch = useAppDispatch();
-  if (loggedInTokens) {
-    const tokens: Tokens = JSON.parse(loggedInTokens);
-    dispatch(loggedIn(getEmail(tokens.idToken))); //TODO handle empty return from getEmail
-  }
+  useEffect(() => {
+    const loggedInTokens = window.sessionStorage.getItem(cts.TOKENS_LOCAL_KEY);
+    const user = buildUserState(loggedInTokens);
+    if (user) {
+      dispatch(loggedIn(user as UserState)); 
+    }
+  }, []);
 
-  // setLoggedIn(window.sessionStorage.getItem(TOKENS_LOCAL_KEY) !== null);
   return (
     <Routes>
       <Route path="/" element={<Navigation />}>

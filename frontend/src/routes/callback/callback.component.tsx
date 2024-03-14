@@ -5,7 +5,8 @@ import axios from "axios";
 import { TokenRequest, TokenResponse, Tokens } from "../../dao/login/login.dao";
 import { useAppDispatch } from '../../store/hooks';
 import { loggedIn } from '../../store/features/user/user.slice';
-import { getEmail } from '../../utils/json.utils';
+import { buildUserStateFromIdToken } from '../../utils/json.utils';
+import { UserState } from "../../dao/state/state.dao";
 
 const Callback = () => {
     const [authCode, setAuthCode] = useState("");
@@ -54,7 +55,11 @@ const Callback = () => {
                 console.log("==============");
                 window.sessionStorage.setItem(cts.TOKENS_LOCAL_KEY, JSON.stringify(tokens));
 
-                dispatch(loggedIn(getEmail(tokens.idToken))); //TODO handle empty return
+                const user = buildUserStateFromIdToken(tokens.idToken);
+
+                if (user) {
+                    dispatch(loggedIn(user as UserState)); 
+                }
 
                 setLoading(false);
             })

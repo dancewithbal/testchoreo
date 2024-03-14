@@ -8,11 +8,11 @@ import getPkce from "oauth-pkce";
 import "./navigation.styles.scss";
 import * as cts from "../../const";
 import { PkceKeys } from "../../dao/login/login.dao";
-import { Button, Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Button, Container, Nav, NavDropdown, Navbar, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const Navigation = () => {
 
-    const { loggedIn, email } = useAppSelector((state) => state.user);
+    const { loggedIn, fullName, picture, email } = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
 
 
@@ -78,7 +78,20 @@ const Navigation = () => {
                             <Nav.Link as={NavLink} to="/profile">Profile</Nav.Link>
                             <Nav.Link as={NavLink} to="/results">Results</Nav.Link>
                             <Button variant="secondary" hidden={loggedIn} disabled={loggedIn} onClick={loginBtnClick}>Login</Button>
-                            <NavDropdown hidden={!loggedIn} title={email} id="collapsible-nav-dropdown">
+                            <NavDropdown hidden={!loggedIn} title={
+                                <OverlayTrigger placement="bottom" overlay={
+                                    <Tooltip id={`tooltip-${email}`}>
+                                        <strong>DanceFloor Account</strong><br />
+                                        <strong>{fullName}</strong>
+                                        <p>{email}</p>
+                                    </Tooltip>
+                                }>
+                                    <img className="rounded-circle" width="40%"
+                                        src={picture}
+                                        alt={email}
+                                    />
+                                </OverlayTrigger>
+                            } id="collapsible-nav-dropdown">
                                 <NavDropdown.Item onClick={logoutBtnClick}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>

@@ -37,6 +37,10 @@ export interface PkceKeys {
 export interface Claims {
     sub: string;
     email: string;
+    given_name: string;
+    name: string;
+    family_name: string;
+    picture: string;
 }
 
 export interface LogoutRequest extends Record<string, string> {
