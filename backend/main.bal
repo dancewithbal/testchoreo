@@ -8,9 +8,9 @@ import lotto.conf;
 // The service-level CORS config applies globally to each `resource`.
 @http:ServiceConfig {
     cors: {
-        allowOrigins: conf:cors.allowOrigins,
+        allowOrigins: conf:cors.allowOrigins
         // allowMethods: ["GET", "POST"],
-        allowCredentials: conf:cors.allowCredentials
+        // allowCredentials: true
         // allowHeaders: ["*"],
         // exposeHeaders: ["*"],
         // maxAge: 84900
@@ -21,6 +21,11 @@ service /backend on new http:Listener(8090) {
     //     return "hello" + textMsg;
     // }
 
+    @http:ResourceConfig {
+        cors: {
+            allowCredentials: true
+        }
+    }
     resource function get results(http:Headers headers) returns json|error {
         foreach var item in headers.getHeaderNames() {
             io:println(item + ": " + (check headers.getHeader(item)));
