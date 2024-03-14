@@ -2,12 +2,15 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/io;
 
+import lotto.conf;
+
+
 // The service-level CORS config applies globally to each `resource`.
 @http:ServiceConfig {
     cors: {
-        allowOrigins: ["https://localhost:3000"],
+        allowOrigins: conf:cors.allowOrigins,
         // allowMethods: ["GET", "POST"],
-        allowCredentials: true
+        allowCredentials: conf:cors.allowCredentials
         // allowHeaders: ["*"],
         // exposeHeaders: ["*"],
         // maxAge: 84900

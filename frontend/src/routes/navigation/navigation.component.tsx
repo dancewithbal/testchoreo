@@ -26,7 +26,7 @@ const Navigation = () => {
 
             let codeChallenge = encodeURIComponent(challenge);
 
-            let uri = `${cts.AUTH_LOGIN_URI}?scope=${cts.SCOPE}&response_type=${cts.RESP_TYPE}&redirect_uri=${encodeURIComponent(cts.REDIRECT_URI)}&client_id=${cts.CLIENT_ID}&code_challenge_method=${cts.CODE_CHALLENGE_METHOD}&code_challenge=${codeChallenge}`;
+            let uri = `${cts.AUTH_LOGIN_URI}?scope=${encodeURIComponent(cts.SCOPE)}&response_type=${cts.RESP_TYPE}&redirect_uri=${encodeURIComponent(cts.REDIRECT_URI)}&client_id=${cts.CLIENT_ID}&code_challenge_method=${cts.CODE_CHALLENGE_METHOD}&code_challenge=${codeChallenge}`;
 
             window.location.assign(uri);
         });
