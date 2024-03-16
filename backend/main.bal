@@ -7,6 +7,7 @@ import ballerina/http;
 import ballerina/log;
 import ballerina/time;
 import ballerina/uuid;
+import ballerina/io;
 
 // This is not applicable for the choreo deployment
 @http:ServiceConfig {
@@ -19,8 +20,10 @@ service /backend on new http:Listener(8090) {
 
     isolated resource function post tickets(@http:Header string x\-jwt\-assertion,
             @http:Payload dao:ReqTicket ticket) returns dao:ResTicket|http:Unauthorized|http:InternalServerError {
+        io:println("============= hit post ticket request ");
         dao:User|error user = util:extractUser(x\-jwt\-assertion);
         if user is error {
+            io:println(user);
             log:printError("Failed to extract the user", user);
             return err:createUnauthorizedError(err:FAILED_TO_EXTRACT_USER, "Failed to extract user from the assertion");
         }
