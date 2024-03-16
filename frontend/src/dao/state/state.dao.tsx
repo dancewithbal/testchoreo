@@ -7,3 +7,9 @@ export interface UserState {
     email: string;
     picture: string;
 }
+
+export interface TicketState {
+    ticketId: string;
+    ticketNumbers: number[];
+    purchaseDate: Date;
+}

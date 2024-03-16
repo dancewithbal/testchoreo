@@ -1,7 +1,20 @@
-public configurable CorsConfig cors = ?;
+# Description.
+public configurable JwtAssertionConfig jwt = ?;
 
-public type CorsConfig record {
-    string[] allowOrigins;
-    boolean allowCredentials;
-};
+# Description.
+#
+# + iss - field description  
+# + aud - field description  
+# + jwksEndpoint - field description  
+# + cacheCap - field description  
+# + cacheCleanupInterval - field description  
+# + cacheMaxAge - field description
+public type JwtAssertionConfig record {|
+    string iss;
+    string[] aud;
+    string jwksEndpoint;
+    int cacheCap;
+    decimal cacheCleanupInterval;
+    decimal cacheMaxAge;
+|};
 

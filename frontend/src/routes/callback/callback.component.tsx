@@ -30,7 +30,7 @@ const Callback = () => {
 
         const body: TokenRequest = {
             code: authCode,
-            grant_type: cts.GRANT_TYPE,
+            grant_type: cts.AUTH_GRANT_TYPE,
             redirect_uri: cts.REDIRECT_URI,
             code_verifier: pkceKeys.verifier,
             client_id: cts.CLIENT_ID,

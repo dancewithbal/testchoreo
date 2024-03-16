@@ -13,6 +13,7 @@ import NotFound from "./routes/NotFound/NotFound";
 import Results from './routes/results/results.component';
 import { buildUserState } from "./utils/json.utils";
 import { UserState } from "./dao/state/state.dao";
+import Buy from "./routes/buy/buy.component";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/buy" element={<Buy />} />
         <Route path="/results" element={<Results />} />
         <Route path="/callback" element={<Callback />} />
         <Route path="*" element={<NotFound />} />

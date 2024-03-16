@@ -10,8 +10,11 @@ declare const window: {
 
         authTokenUri: string;
         authGrantType: string;
+        authRefreshGrantType: string,
 
         backendBaseUrl: string;
+        backendAuthHeaderName: string;
+        backendAuthHeaderValuePrefix: string;
     }
 };
 
@@ -27,6 +30,9 @@ export const CLIENT_ID = window.env.authClientId;
 export const CODE_CHALLENGE_METHOD = window.env.authCodeChallengeMethod;
 
 export const AUTH_TOKEN_URI = window.env.authTokenUri;
-export const GRANT_TYPE = window.env.authGrantType;
+export const AUTH_GRANT_TYPE = window.env.authGrantType;
+export const AUT_REFRESH_GRANT_TYPE = window.env.authRefreshGrantType;
 
 export const BACKEND_BASE_URL = window.env.backendBaseUrl;
+export const BACKEND_AUTH_HEADER_NAME = window.env.backendAuthHeaderName;
+export const BACKEND_AUTH_HEADER_VALUE_PREFIX = window.env.backendAuthHeaderValuePrefix;

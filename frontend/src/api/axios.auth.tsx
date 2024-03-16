@@ -21,7 +21,7 @@ refreshAxios.interceptors.request.use((request) => {
 
     if (loggedInTokens) {
         const tokens: Tokens = JSON.parse(loggedInTokens);
-        request.headers['Authorization'] = `Bearer ${tokens.accessToken}`;
+        request.headers[cts.BACKEND_AUTH_HEADER_NAME] = `${cts.BACKEND_AUTH_HEADER_VALUE_PREFIX}${tokens.accessToken}`;
     }
     return request;
 });
@@ -37,14 +37,18 @@ const refreshAuthLogic = (failedRequest: any) => {
     }
     const tokens: Tokens = JSON.parse(loggedInTokens);
     const body: RefreshTokenRequest = {
-        grant_type: cts.GRANT_TYPE,
+        grant_type: cts.AUT_REFRESH_GRANT_TYPE,
         redirect_uri: cts.REDIRECT_URI,
         code_verifier: tokens.pkceVerifier,
         refresh_token: tokens.refreshToken,
         client_id: cts.CLIENT_ID,
     };
 
-    return plainAxios.post<TokenResponse>("", new URLSearchParams(body)).then((response) => {
+    return plainAxios.post<TokenResponse>("", new URLSearchParams(body), {
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    }).then((response) => {
         const newTokens: Tokens = {
             accessToken: response.data.access_token,
             refreshToken: response.data.refresh_token,
@@ -57,7 +61,9 @@ const refreshAuthLogic = (failedRequest: any) => {
         failedRequest.response.config.headers['Authorization'] = 'Bearer ' + tokens.accessToken;
         return Promise.resolve();
     }).catch((error) => {
+        console.log("========Refresh call Failed ======" + error);
         var dispatch = useAppDispatch();
+        window.sessionStorage.removeItem(cts.TOKENS_LOCAL_KEY);
         dispatch(loggedOut());
         return Promise.reject();
     });

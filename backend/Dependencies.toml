@@ -120,6 +120,9 @@ dependencies = [
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "time"}
 ]
+modules = [
+	{org = "ballerina", packageName = "jwt", moduleName = "jwt"}
+]
 
 [[package]]
 org = "ballerina"
@@ -287,6 +290,9 @@ version = "2.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
+modules = [
+	{org = "ballerina", packageName = "time", moduleName = "time"}
+]
 
 [[package]]
 org = "ballerina"
@@ -294,6 +300,20 @@ name = "url"
 version = "2.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
+]
+
+[[package]]
+org = "ballerina"
+name = "uuid"
+version = "1.7.0"
+dependencies = [
+	{org = "ballerina", name = "crypto"},
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.int"},
+	{org = "ballerina", name = "time"}
+]
+modules = [
+	{org = "ballerina", packageName = "uuid", moduleName = "uuid"}
 ]
 
 [[package]]
@@ -315,14 +335,20 @@ version = "3.1.1"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "jwt"},
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "test"},
+	{org = "ballerina", name = "time"},
+	{org = "ballerina", name = "uuid"},
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
 	{org = "choreo", packageName = "lotto", moduleName = "lotto"},
 	{org = "choreo", packageName = "lotto", moduleName = "lotto.auth"},
 	{org = "choreo", packageName = "lotto", moduleName = "lotto.conf"},
+	{org = "choreo", packageName = "lotto", moduleName = "lotto.dao"},
+	{org = "choreo", packageName = "lotto", moduleName = "lotto.db"},
+	{org = "choreo", packageName = "lotto", moduleName = "lotto.err"},
 	{org = "choreo", packageName = "lotto", moduleName = "lotto.util"}
 ]
 

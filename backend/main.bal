@@ -1,53 +1,70 @@
+import lotto.dao;
+import lotto.db;
+import lotto.err;
+import lotto.util;
+
 import ballerina/http;
 import ballerina/log;
-import ballerina/io;
+import ballerina/time;
+import ballerina/uuid;
 
-import lotto.conf;
-
-
-// The service-level CORS config applies globally to each `resource`.
+// This is not applicable for the choreo deployment
 @http:ServiceConfig {
     cors: {
-        allowOrigins: conf:cors.allowOrigins
-        // allowMethods: ["GET", "POST"],
-        // allowCredentials: true
-        // allowHeaders: ["*"],
-        // exposeHeaders: ["*"],
-        // maxAge: 84900
+        allowOrigins: ["https://localhost:3000"],
+        allowCredentials: true
     }
 }
 service /backend on new http:Listener(8090) {
-    // resource function post test1(@http:Payload string textMsg) returns string {
-    //     return "hello" + textMsg;
-    // }
 
-    @http:ResourceConfig {
-        cors: {
-            allowCredentials: true
+    isolated resource function post tickets(@http:Header string x\-jwt\-assertion,
+            @http:Payload dao:ReqTicket ticket) returns dao:ResTicket|http:Unauthorized|http:InternalServerError {
+        dao:User|error user = util:extractUser(x\-jwt\-assertion);
+        if user is error {
+            log:printError("Failed to extract the user", user);
+            return err:createUnauthorizedError(err:FAILED_TO_EXTRACT_USER, "Failed to extract user from the assertion");
         }
+
+        error? res = db:upsertUser(user); 
+        if (res is error) {
+            log:printError("Failed to upsert user", res);
+            return err:createInternaServerError(err:FAILED_TO_UPSERT_USER, "Failed to upsert user");
+        }
+
+        dao:Ticket data = {
+            purchaseDate: time:utcNow(),
+            ticketNumbers: ticket.numbers,
+            userId: user.userId,
+            ticketId: uuid:createType1AsString()
+        };
+        res = db:upsertTicket(data);
+        if res is error {
+            log:printError("Failed to upsert ticket", res);
+            return err:createInternaServerError(err:FAILED_TO_UPSERT_TICKET, "Failed to upsert ticket");
+        }
+
+        dao:ResTicket re = {
+            ticketId: data.ticketId,
+            ticketNumbers: data.ticketNumbers,
+            purchaseDate: data.purchaseDate[0]
+        };
+        return re;
     }
-    resource function get results(http:Headers headers) returns json|error {
-        foreach var item in headers.getHeaderNames() {
-            io:println(item + ": " + (check headers.getHeader(item)));
+
+    isolated resource function delete tickets/[string id]() returns dao:ResGeneric|http:InternalServerError {
+        error? res = db:deleteTicket(id);
+        if  res is error {
+            log:printError("Failed to delete ticket", res);
+            return err:createInternaServerError(err:FAILED_TO_DELETE_TICKET, "Failed to delete the ticket");
         }
-        json result = [
-            {
-                date: "03/02/2023",
-                numbers: [5, 9, 5, 3],
-                winners: 4
-            },
-            {
-                date: "04/02/2023",
-                numbers: [9, 7, 2, 2],
-                winners: 5
-            },
-            {
-                date: "05/02/2023",
-                numbers: [7, 2, 9, 4],
-                winners: 5
-            }
-        ];
-        return result;
+        return {
+            status: 200,
+            message: "Successfully deleted"
+        };
+    }
+
+    isolated resource function get tickets(http:Headers headers) returns dao:ResTicket[] {
+        return db:getTickets();
     }
 
     resource function get login(@http:Query string code) returns string {
