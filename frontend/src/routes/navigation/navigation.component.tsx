@@ -99,7 +99,13 @@ const Navigation = () => {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Outlet />
+            <div className="container shadow">
+                <div className="row">
+                    <div className="col-lg-8">
+                        <Outlet />
+                    </div>
+                </div>
+            </div>
         </Fragment>
     );
 };

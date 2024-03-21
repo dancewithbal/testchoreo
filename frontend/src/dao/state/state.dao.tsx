@@ -11,5 +11,6 @@ export interface UserState {
 export interface TicketState {
     ticketId: string;
     ticketNumbers: number[];
-    purchaseDate: Date;
+    purchaseDate: string;
+    drawDate: string;
 }

@@ -4,10 +4,10 @@ import lotto.err;
 import lotto.util;
 
 import ballerina/http;
+import ballerina/io;
 import ballerina/log;
 import ballerina/time;
 import ballerina/uuid;
-import ballerina/io;
 
 // This is not applicable for the choreo deployment
 @http:ServiceConfig {
@@ -20,7 +20,6 @@ service /backend on new http:Listener(8090) {
 
     isolated resource function post tickets(@http:Header string x\-jwt\-assertion,
             @http:Payload dao:ReqTicket ticket) returns dao:ResTicket|http:Unauthorized|http:InternalServerError {
-        io:println("============= hit post ticket request " + x\-jwt\-assertion + " ===");
         dao:User|error user = util:extractUser(x\-jwt\-assertion);
         if user is error {
             io:println(user);
@@ -28,17 +27,24 @@ service /backend on new http:Listener(8090) {
             return err:createUnauthorizedError(err:FAILED_TO_EXTRACT_USER, "Failed to extract user from the assertion");
         }
 
-        error? res = db:upsertUser(user); 
+        error? res = db:upsertUser(user);
         if (res is error) {
             log:printError("Failed to upsert user", res);
             return err:createInternaServerError(err:FAILED_TO_UPSERT_USER, "Failed to upsert user");
         }
 
+        time:Date|error drawDate = util:dateFromBasicString(ticket.drawDate);
+        if drawDate is error {
+            log:printError("Failed to parse draw date", res);
+            return err:createInternaServerError(err:FAILED_TO_PARSE_DRAW_DATE, "Failed to parse draw date");
+        }
+
         dao:Ticket data = {
-            purchaseDate: time:utcNow(),
+            purchaseDate: time:utcToCivil(time:utcNow()),
             ticketNumbers: ticket.numbers,
             userId: user.userId,
-            ticketId: uuid:createType1AsString()
+            ticketId: uuid:createType1AsString(),
+            drawDate: drawDate
         };
         res = db:upsertTicket(data);
         if res is error {
@@ -49,14 +55,22 @@ service /backend on new http:Listener(8090) {
         dao:ResTicket re = {
             ticketId: data.ticketId,
             ticketNumbers: data.ticketNumbers,
-            purchaseDate: data.purchaseDate[0]
+            purchaseDate: util:civilToIso8601(data.purchaseDate),
+            drawDate: util:dateToBasicString(data.drawDate)
         };
         return re;
     }
 
-    isolated resource function delete tickets/[string id]() returns dao:ResGeneric|http:InternalServerError {
-        error? res = db:deleteTicket(id);
-        if  res is error {
+    isolated resource function delete tickets/[string id](@http:Header string x\-jwt\-assertion)
+            returns dao:ResGeneric|http:Unauthorized|http:InternalServerError {
+        dao:User|error user = util:extractUser(x\-jwt\-assertion);
+        if user is error {
+            io:println(user);
+            log:printError("Failed to extract the user", user);
+            return err:createUnauthorizedError(err:FAILED_TO_EXTRACT_USER, "Failed to extract user from the assertion");
+        }
+        error? res = db:deleteTicket(user.userId, id);
+        if res is error {
             log:printError("Failed to delete ticket", res);
             return err:createInternaServerError(err:FAILED_TO_DELETE_TICKET, "Failed to delete the ticket");
         }
@@ -66,12 +80,48 @@ service /backend on new http:Listener(8090) {
         };
     }
 
-    isolated resource function get tickets(http:Headers headers) returns dao:ResTicket[] {
-        return db:getTickets();
+    isolated resource function get tickets(@http:Header string x\-jwt\-assertion) returns dao:ResTicket[]|http:Unauthorized {
+        dao:User|error user = util:extractUser(x\-jwt\-assertion);
+        if user is error {
+            io:println(user);
+            log:printError("Failed to extract the user", user);
+            return err:createUnauthorizedError(err:FAILED_TO_EXTRACT_USER, "Failed to extract user from the assertion");
+        }
+        return db:getTickets(user.userId);
     }
 
-    resource function get login(@http:Query string code) returns string {
-        log:printDebug("Login request received");
-        return "hello" + code;
+    isolated resource function get draws() returns dao:ResDraw[] {
+        return db:getDraws();
     }
+
+    isolated resource function post draw() returns dao:ResGeneric|http:InternalServerError {
+        io:println("===========hit draw trigger =============");
+        // dao:TicketNumbers|error numbers = util:generateNumbers();
+        // if numbers is error {
+        //     log:printError("Failed to run the Draw", numbers);
+        //     return err:createInternaServerError(err:FAILED_TO_RUN_THE_DRAW, "Failed to run the Draw");
+        // }
+
+        // time:Civil val = time:utcToCivil(time:utcNow());
+        // dao:Draw data = {
+        //     drawDate: {month: val.month, year: val.year, day: val.day},
+        //     winningNumbers: numbers
+        // };
+        // error? res = db:upsertDraw(data);
+        // if res is error {
+        //     log:printError("Failed to insert the Draw", res);
+        //     return err:createInternaServerError(err:FAILED_TO_RUN_THE_DRAW, "Failed to insert the Draw");
+        // }
+
+        dao:ResGeneric drawRes = {
+            status: http:STATUS_OK,
+            message: "Successfully ran the draw"
+        };
+        return drawRes;
+    }
+
+    // resource function get login(@http:Query string code) returns string {
+    //     log:printDebug("Login request received");
+    //     return "hello" + code;
+    // }
 }

@@ -15,6 +15,8 @@ const Buy = () => {
     const [n2, setN2] = useState(0);
     const [n3, setN3] = useState(0);
     const [n4, setN4] = useState(0);
+    const currentDate = (new Date()).toISOString().slice(0, 10);
+    const [drawDate, setDrawDate] = useState(currentDate);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -24,8 +26,10 @@ const Buy = () => {
 
     const handleBuyTicket = () => {
         const body: ReqTicket = {
-            numbers: [n1, n2, n3, n4]
+            numbers: [n1, n2, n3, n4],
+            drawDate
         };
+        console.log(drawDate);
         axios
             .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
                 headers: {
@@ -36,11 +40,7 @@ const Buy = () => {
             .then((data) => {
                 console.log(data);
                 resetNumbers();
-                dispatch(addedTicket({
-                    ticketId: data.ticketId,
-                    ticketNumbers: data.ticketNumbers,
-                    purchaseDate: data.purchaseDate
-                }));
+                dispatch(addedTicket(data));
             })
             .catch((error) => {
                 console.log(error);
@@ -75,13 +75,13 @@ const Buy = () => {
             .get<ResTicket[]>(cts.BACKEND_BASE_URL + "/tickets")
             .then(response => response.data)
             .then((data) => {
-                console.log(data);
                 const tickets: TicketState[] = [];
                 data.map((t) => {
                     tickets.push({
                         ticketId: t.ticketId,
                         ticketNumbers: t.ticketNumbers,
-                        purchaseDate: t.purchaseDate
+                        purchaseDate: t.purchaseDate,
+                        drawDate: t.drawDate
                     })
                 })
                 dispatch(addedTickets(tickets));
@@ -98,7 +98,7 @@ const Buy = () => {
                 +
             </Button>
 
-            <Modal size="lg" show={show} onHide={handleClose} animation={false}>
+            <Modal show={show} onHide={handleClose} animation={false}>
                 <Modal.Header closeButton>
                     <Modal.Title>Buy Ticket</Modal.Title>
                 </Modal.Header>
@@ -110,21 +110,25 @@ const Buy = () => {
                                 <th>Number 2</th>
                                 <th>Number 3</th>
                                 <th>Number 4</th>
+                                <th>Draw</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <th>
-                                    <input id="n1" value={n1} type="number" onChange={e => setN1(+e.target.value)}></input>
+                                    <input className="form-control" id="n1" value={n1} type="number" onChange={e => setN1(+e.target.value)} min={0} max={25}></input>
                                 </th>
                                 <th>
-                                    <input id="n2" value={n2} type="number" onChange={e => setN2(+e.target.value)}></input>
+                                    <input className="form-control" id="n2" value={n2} type="number" onChange={e => setN2(+e.target.value)} min={0} max={25}></input>
                                 </th>
                                 <th>
-                                    <input id="n3" value={n3} type="number" onChange={e => setN3(+e.target.value)}></input>
+                                    <input className="form-control" id="n3" value={n3} type="number" onChange={e => setN3(+e.target.value)} min={0} max={25}></input>
                                 </th>
                                 <th>
-                                    <input id="n4" value={n4} type="number" onChange={e => setN4(+e.target.value)}></input>
+                                    <input className="form-control" id="n4" value={n4} type="number" onChange={e => setN4(+e.target.value)} min={0} max={25}></input>
+                                </th>
+                                <th>
+                                    <input className="form-control" id="drawDate" value={drawDate} type="date" onChange={e => setDrawDate(e.target.value)} min={currentDate}></input>
                                 </th>
                             </tr>
                         </tbody>
@@ -142,7 +146,7 @@ const Buy = () => {
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
-                        <th>Ticket Id</th>
+                        <th>Draw Date</th>
                         <th>Numbers</th>
                         <th>Purchase Date</th>
                         <th>Refund</th>
@@ -152,9 +156,9 @@ const Buy = () => {
                     {
                         tickets.map((res) => (
                             <tr key={res.ticketId}>
-                                <td>{res.ticketId}</td>
-                                <td>{res.ticketNumbers}</td>
-                                <td>{res.purchaseDate.toLocaleString()}</td>
+                                <td>{res.drawDate}</td>
+                                <td>{res.ticketNumbers[0]}-{res.ticketNumbers[1]}-{res.ticketNumbers[2]}-{res.ticketNumbers[3]}</td>
+                                <td>{res.purchaseDate}</td>
                                 <th><button className="btn btn-danger" onClick={() => handleRefundTicket(res.ticketId)}>Refund</button></th>
                             </tr>
                         ))

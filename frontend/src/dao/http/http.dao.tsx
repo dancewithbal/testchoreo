@@ -5,10 +5,17 @@ export interface GenResp {
 
 export interface ReqTicket {
     readonly numbers: number[];
+    readonly drawDate: string;
 }
 
 export interface ResTicket {
     ticketId: string;
     ticketNumbers: number[];
-    purchaseDate: Date;
+    purchaseDate: string;
+    drawDate: string
+}
+
+export interface ResDraw {
+    drawDate: string;
+    winningNumbers: number[];
 }

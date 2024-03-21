@@ -8,20 +8,20 @@ public type User record {
     string fullName;
     string email;
     float balance;
-    time:Utc createdAt;
-    time:Utc updatedAt;
+    time:Civil createdAt;
+    time:Civil updatedAt;
 };
 
 public type Ticket record {
     readonly string ticketId;
     string userId;
     TicketNumbers ticketNumbers;
-    time:Utc purchaseDate;
+    time:Civil purchaseDate;
+    time:Date drawDate;
 };
 
 public type Draw record {
-    readonly string drawId;
-    time:Utc drawDate;
+    readonly time:Date drawDate;
     TicketNumbers winningNumbers;
 };
 
@@ -47,14 +47,20 @@ public type ResGenericError record {
 
 public type ReqTicket record {
     TicketNumbers numbers;
+    string drawDate;
 };
 
 public type ResTicket record {
     string ticketId;
     TicketNumbers ticketNumbers;
-    int purchaseDate;
+    string purchaseDate;
+    string drawDate;
 };
 
+public type ResDraw record {
+    string drawDate;
+    TicketNumbers winningNumbers;
+};
 
 
 

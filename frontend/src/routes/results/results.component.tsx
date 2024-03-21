@@ -1,17 +1,18 @@
 import axios from '../../api/axios.auth';
 import { useEffect, useState } from 'react';
 import * as cts from '../../const';
-import { Result } from '../../dao/login/login.dao';
+import { ResDraw } from '../../dao/http/http.dao';
+import { Table } from 'react-bootstrap';
 
 const Results = () => {
-    var [results, setResults] = useState<Result[]>([])
+    var [draws, setDraws] = useState<ResDraw[]>([])
 
     useEffect(() => {
         axios
-            .get<Result[]>(cts.BACKEND_BASE_URL + "/results")
+            .get<ResDraw[]>(cts.BACKEND_BASE_URL + "/draws")
             .then((response) => {
                 console.log(response.data);
-                setResults(response.data);
+                setDraws(response.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -20,9 +21,25 @@ const Results = () => {
     }, []);
 
     return (
-        <div>{results.map((result) => {
-            return <div key={result.date}>{result.date}</div>
-        })}</div>
+        <Table striped bordered hover size="sm">
+            <thead>
+                <tr>
+                    <th>Draw Date</th>
+                    <th>Winning Numbers</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    draws.map((draw) => (
+                        <tr key={draw.drawDate}>
+                            <td>{draw.drawDate}</td>
+                            <td>{draw.winningNumbers[0]}-{draw.winningNumbers[1]}-{draw.winningNumbers[2]}-{draw.winningNumbers[3]}</td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </Table>
+
     );
 };
 

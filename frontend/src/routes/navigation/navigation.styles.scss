@@ -32,3 +32,20 @@
   // max-width: 1px;
 }
 
+.centered-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Set height to 100% of the viewport height */
+  background-color: #f0f0f0; /* Set background color for the white areas */
+}
+
+.content {
+  text-align: center; /* Align content in the center horizontally */
+  background-color: #ffffff; /* Set background color for the content area */
+  min-width: 80%;
+  padding: 20px; /* Add some padding for the content area */
+  border-radius: 8px; /* Add border radius for rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+

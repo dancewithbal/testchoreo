@@ -49,8 +49,3 @@ export interface LogoutRequest extends Record<string, string> {
     readonly state: string;
 }
 
-export interface Result {
-    readonly date: string;
-    readonly numbers: number[];
-    readonly winners: number
-}
