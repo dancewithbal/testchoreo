@@ -35,7 +35,7 @@ http:Client taskClient = check new (backendUrl,
 public function main() {
     io:println("================ Task Trigger for Draw ================");
 
-    ResGeneric|error res = taskClient->/draw;
+    ResGeneric|error res = taskClient->/draw.post({});
     if res is error {
         io:println("Error triggering the draw, ", res);
     } else {
