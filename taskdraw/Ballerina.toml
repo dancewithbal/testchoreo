@@ -1,0 +1,8 @@
+[package]
+org = "choreo"
+name = "lottotask"
+distribution = "2201.8.6"
+version = "3.1.1"
+
+[build-options]
+observabilityIncluded = true
