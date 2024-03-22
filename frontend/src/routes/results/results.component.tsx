@@ -11,7 +11,6 @@ const Results = () => {
         axios
             .get<ResDraw[]>(cts.BACKEND_BASE_URL + "/draws")
             .then((response) => {
-                console.log(response.data);
                 setDraws(response.data);
             })
             .catch((error) => {

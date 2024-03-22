@@ -78,6 +78,7 @@ const Navigation = () => {
                             <Nav.Link as={NavLink} to="/profile">Profile</Nav.Link>
                             <Nav.Link as={NavLink} to="/Buy" hidden={!loggedIn} disabled={!loggedIn}>Buy</Nav.Link>
                             <Nav.Link as={NavLink} to="/results">Results</Nav.Link>
+                            <Nav.Link as={NavLink} to="/winners">Winners</Nav.Link>
                             <Button variant="secondary" hidden={loggedIn} disabled={loggedIn} onClick={loginBtnClick}>Login</Button>
                             <NavDropdown hidden={!loggedIn} title={
                                 <OverlayTrigger placement="bottom" overlay={

@@ -15,6 +15,9 @@ declare const window: {
         backendBaseUrl: string;
         backendAuthHeaderName: string;
         backendAuthHeaderValuePrefix: string;
+        
+        ticketStartNumber: number;
+        ticketEndNumber: number;
     }
 };
 
@@ -36,3 +39,6 @@ export const AUT_REFRESH_GRANT_TYPE = window.env.authRefreshGrantType;
 export const BACKEND_BASE_URL = window.env.backendBaseUrl;
 export const BACKEND_AUTH_HEADER_NAME = window.env.backendAuthHeaderName;
 export const BACKEND_AUTH_HEADER_VALUE_PREFIX = window.env.backendAuthHeaderValuePrefix;
+
+export const TICKET_START_NUMBER = window.env.ticketStartNumber;
+export const TICKET_END_NUMBER = window.env.ticketEndNumber;

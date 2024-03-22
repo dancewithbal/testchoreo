@@ -19,3 +19,11 @@ export interface ResDraw {
     drawDate: string;
     winningNumbers: number[];
 }
+
+export interface ResWinner {
+    drawDate: string;
+    ticketId: string;
+    userFullName: string;
+    prizeWon: number;
+    description: string;
+}

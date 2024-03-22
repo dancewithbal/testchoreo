@@ -18,3 +18,10 @@
 //     decimal cacheMaxAge;
 // |};
 
+public configurable TicketConfig ticketConf = ?;
+
+public type TicketConfig record {|
+    int startNumber;
+    int endNumber;
+|};
+

@@ -14,6 +14,7 @@ import Results from './routes/results/results.component';
 import { buildUserState } from "./utils/json.utils";
 import { UserState } from "./dao/state/state.dao";
 import Buy from "./routes/buy/buy.component";
+import Winners from "./routes/winners/winners.component";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/buy" element={<Buy />} />
         <Route path="/results" element={<Results />} />
+        <Route path="/winners" element={<Winners />} />
         <Route path="/callback" element={<Callback />} />
         <Route path="*" element={<NotFound />} />
       </Route>

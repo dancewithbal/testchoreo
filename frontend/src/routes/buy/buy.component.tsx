@@ -17,19 +17,20 @@ const Buy = () => {
     const [n4, setN4] = useState(0);
     const currentDate = (new Date()).toISOString().slice(0, 10);
     const [drawDate, setDrawDate] = useState(currentDate);
+    const [filterDrawDate, setFilterDrawDate] = useState("");
+    var [tickets, setTickets] = useState<ResTicket[]>([])
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const dispatch = useAppDispatch();
 
-    const tickets = useAppSelector((state) => state.tickets);
+    // const tickets = useAppSelector((state) => state.tickets);
 
     const handleBuyTicket = () => {
         const body: ReqTicket = {
             numbers: [n1, n2, n3, n4],
             drawDate
         };
-        console.log(drawDate);
         axios
             .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
                 headers: {
@@ -38,9 +39,9 @@ const Buy = () => {
             })
             .then(response => response.data)
             .then((data) => {
-                console.log(data);
                 resetNumbers();
-                dispatch(addedTicket(data));
+                // dispatch(addedTicket(data));
+                fetchTickets();
             })
             .catch((error) => {
                 console.log(error);
@@ -54,8 +55,8 @@ const Buy = () => {
             .delete<GenResp>(cts.BACKEND_BASE_URL + "/tickets/" + ticketId)
             .then(response => response.data)
             .then((data) => {
-                console.log(data);
-                dispatch(removedTicket(ticketId));
+                // dispatch(removedTicket(ticketId));
+                fetchTickets();
             })
             .catch((error) => {
                 console.log(error);
@@ -71,26 +72,33 @@ const Buy = () => {
     }
 
     useEffect(() => {
+        fetchTickets();
+    }, [filterDrawDate]);
+
+    const fetchTickets = () => {
+        var param = "";
+        if (filterDrawDate) {
+            param += "?drawDate=" + filterDrawDate;
+        }
         axios
-            .get<ResTicket[]>(cts.BACKEND_BASE_URL + "/tickets")
-            .then(response => response.data)
-            .then((data) => {
-                const tickets: TicketState[] = [];
-                data.map((t) => {
-                    tickets.push({
-                        ticketId: t.ticketId,
-                        ticketNumbers: t.ticketNumbers,
-                        purchaseDate: t.purchaseDate,
-                        drawDate: t.drawDate
-                    })
-                })
-                dispatch(addedTickets(tickets));
+            .get<ResTicket[]>(cts.BACKEND_BASE_URL + "/tickets" + param)
+            .then((response) => {
+                setTickets(response.data);
+                // const tickets: TicketState[] = [];
+                // data.map((t) => {
+                //     tickets.push({
+                //         ticketId: t.ticketId,
+                //         ticketNumbers: t.ticketNumbers,
+                //         purchaseDate: t.purchaseDate,
+                //         drawDate: t.drawDate
+                //     })
+                // })
+                // dispatch(addedTickets(tickets));
             })
             .catch((error) => {
                 console.log(error);
             });
-
-    }, []);
+    }
 
     return (
         <div>
@@ -116,16 +124,16 @@ const Buy = () => {
                         <tbody>
                             <tr>
                                 <th>
-                                    <input className="form-control" id="n1" value={n1} type="number" onChange={e => setN1(+e.target.value)} min={0} max={25}></input>
+                                    <input className="form-control" id="n1" value={n1} type="number" onChange={e => setN1(+e.target.value)} min={cts.TICKET_START_NUMBER} max={cts.TICKET_END_NUMBER}></input>
                                 </th>
                                 <th>
-                                    <input className="form-control" id="n2" value={n2} type="number" onChange={e => setN2(+e.target.value)} min={0} max={25}></input>
+                                    <input className="form-control" id="n2" value={n2} type="number" onChange={e => setN2(+e.target.value)} min={cts.TICKET_START_NUMBER} max={cts.TICKET_END_NUMBER}></input>
                                 </th>
                                 <th>
-                                    <input className="form-control" id="n3" value={n3} type="number" onChange={e => setN3(+e.target.value)} min={0} max={25}></input>
+                                    <input className="form-control" id="n3" value={n3} type="number" onChange={e => setN3(+e.target.value)} min={cts.TICKET_START_NUMBER} max={cts.TICKET_END_NUMBER}></input>
                                 </th>
                                 <th>
-                                    <input className="form-control" id="n4" value={n4} type="number" onChange={e => setN4(+e.target.value)} min={0} max={25}></input>
+                                    <input className="form-control" id="n4" value={n4} type="number" onChange={e => setN4(+e.target.value)} min={cts.TICKET_START_NUMBER} max={cts.TICKET_END_NUMBER}></input>
                                 </th>
                                 <th>
                                     <input className="form-control" id="drawDate" value={drawDate} type="date" onChange={e => setDrawDate(e.target.value)} min={currentDate}></input>
@@ -143,6 +151,7 @@ const Buy = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <input className="form-control" id="filterDrawDate" value={filterDrawDate} type="date" onChange={e => setFilterDrawDate(e.target.value)}></input>
             <Table striped bordered hover size="sm">
                 <thead>
                     <tr>
