@@ -16,7 +16,7 @@ import ballerina/uuid;
         allowCredentials: true
     }
 }
-service /backend on new http:Listener(8090) {
+service /backend on new http:Listener(8080) {
 
     isolated resource function post tickets(@http:Header string x\-jwt\-assertion,
             @http:Payload dao:ReqTicket ticket) returns dao:ResTicket|http:Unauthorized|http:BadRequest|http:InternalServerError {

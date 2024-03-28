@@ -42,7 +42,6 @@ const Callback = () => {
                 },
             })
             .then((response) => {
-                console.log(response.data);
                 const tokens: Tokens = {
                     accessToken: response.data.access_token,
                     refreshToken: response.data.refresh_token,
@@ -50,9 +49,6 @@ const Callback = () => {
                     idToken: response.data.id_token,
                     pkceVerifier: pkceKeys.verifier,
                 }
-                console.log("==============");
-                console.log(response.data);
-                console.log("==============");
                 window.sessionStorage.setItem(cts.TOKENS_LOCAL_KEY, JSON.stringify(tokens));
 
                 const user = buildUserStateFromIdToken(tokens.idToken);

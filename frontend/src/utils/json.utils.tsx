@@ -1,9 +1,9 @@
 import { Claims, Tokens } from '../dao/login/login.dao';
 import { UserState } from '../dao/state/state.dao';
 
-export const buildUserState: (tokenStr: string|null) => UserState|boolean = (tokenStr: string|null) => {
+export const buildUserState: (tokenStr: string|null) => UserState|null = (tokenStr: string|null) => {
     if (!tokenStr) {
-        return false;
+        return null;
     }
     try {
         const tokens: Tokens = JSON.parse(tokenStr);
@@ -11,10 +11,10 @@ export const buildUserState: (tokenStr: string|null) => UserState|boolean = (tok
     } catch (error) {
         console.error('Error decoding ID token:', error);
     }
-    return false;
+    return null;
 }
 
-export const buildUserStateFromIdToken: (idToken: string) => UserState|boolean = (idToken: string) => {
+export const buildUserStateFromIdToken: (idToken: string) => UserState|null = (idToken: string) => {
     try {
         // Decode the ID token
         const payloadBase64 = idToken.split('.')[1];
@@ -36,5 +36,5 @@ export const buildUserStateFromIdToken: (idToken: string) => UserState|boolean =
     } catch (error) {
         console.error('Error decoding ID token:', error);
     }
-    return false;
+    return null;
 }
