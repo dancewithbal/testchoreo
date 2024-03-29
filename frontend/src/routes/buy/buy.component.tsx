@@ -1,12 +1,8 @@
 import { Button, Modal, Table } from "react-bootstrap";
-import { useAppSelector } from "../../store/hooks";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from '../../store/hooks';
-import { addedTicket, addedTickets, removedTicket } from '../../store/features/tickets/tickets.slice';
 import axios from '../../api/axios.auth';
 import { GenResp, ReqTicket, ResTicket } from "../../dao/http/http.dao";
 import * as cts from '../../const';
-import { TicketState } from "../../dao/state/state.dao";
 
 const Buy = () => {
 
@@ -22,30 +18,34 @@ const Buy = () => {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const dispatch = useAppDispatch();
-
-    // const tickets = useAppSelector((state) => state.tickets);
 
     const handleBuyTicket = () => {
         const body: ReqTicket = {
             numbers: [n1, n2, n3, n4],
             drawDate
         };
+        // axios
+        //     .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
+        //     .then(response => response.data)
+        //     .then((data) => {
+        //         resetNumbers();
+        //         fetchTickets();
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         resetNumbers();
+        //     });
         axios
-            .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.data)
-            .then((data) => {
-                resetNumbers();
-                // dispatch(addedTicket(data));
-                fetchTickets();
+            .get<ResTicket>(cts.BACKEND_BASE_URL + "/test")
+            .then((response) => {
+                console.log("----------" + response.data);
             })
             .catch((error) => {
                 console.log(error);
-                resetNumbers();
             });
         handleClose();
     }
@@ -53,9 +53,7 @@ const Buy = () => {
     const handleRefundTicket = (ticketId: string) => {
         axios
             .delete<GenResp>(cts.BACKEND_BASE_URL + "/tickets/" + ticketId)
-            .then(response => response.data)
-            .then((data) => {
-                // dispatch(removedTicket(ticketId));
+            .then((response) => {
                 fetchTickets();
             })
             .catch((error) => {

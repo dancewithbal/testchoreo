@@ -18,6 +18,15 @@ import ballerina/uuid;
 }
 service /backend on new http:Listener(8080) {
 
+    isolated resource function get test(http:Request req) returns string|error {
+        io:println("===============================================");
+        foreach string item in req.getHeaderNames() {
+            io:println(string `key - ${item}, value - ${check req.getHeader(item)}`);
+        }
+        io:println("===============================================");
+        return "hello world";
+    }
+
     isolated resource function post tickets(@http:Header string x\-jwt\-assertion,
             @http:Payload dao:ReqTicket ticket) returns dao:ResTicket|http:Unauthorized|http:BadRequest|http:InternalServerError {
         dao:User|error user = util:extractUser(x\-jwt\-assertion);
