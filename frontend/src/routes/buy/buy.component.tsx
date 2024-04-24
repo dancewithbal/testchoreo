@@ -24,29 +24,29 @@ const Buy = () => {
             numbers: [n1, n2, n3, n4],
             drawDate
         };
-        // axios
-        //     .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     })
-        //     .then(response => response.data)
-        //     .then((data) => {
-        //         resetNumbers();
-        //         fetchTickets();
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         resetNumbers();
-        //     });
         axios
-            .get<ResTicket>(cts.BACKEND_BASE_URL + "/test")
-            .then((response) => {
-                console.log("----------" + response.data);
+            .post<ResTicket>(cts.BACKEND_BASE_URL + "/tickets", body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.data)
+            .then((data) => {
+                resetNumbers();
+                fetchTickets();
             })
             .catch((error) => {
                 console.log(error);
+                resetNumbers();
             });
+        // axios
+        //     .get<ResTicket>(cts.BACKEND_BASE_URL + "/test")
+        //     .then((response) => {
+        //         console.log("----------" + response.data);
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //     });
         handleClose();
     }
 
